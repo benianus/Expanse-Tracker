@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using ExpanseTrackerBusinessLayer;
 
 namespace ExpanseTrackerApiLayer.Controllers
 {
@@ -13,9 +13,17 @@ namespace ExpanseTrackerApiLayer.Controllers
         [HttpGet("GetAll" , Name = "Get All Expanses")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult GetAllExpanses()
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<ExpanseTrackerDto>>> GetAllExpanses()
         {
-            return Ok("Done");
+            List<ExpanseTrackerDto> expanseList = await ExpanseTracker.GetExpansesList();
+
+            if (expanseList == null)
+            {
+                return NotFound("Expanses Not Found");
+            }
+
+            return Ok(expanseList);
         }
     }
 }

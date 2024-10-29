@@ -160,7 +160,6 @@ namespace ExpanseTrackerDataLayer
 
             return rowsAffected > 0;
         }
-
         public static async Task<bool> DeleteExpanse(int Id)
         {
             int rowsAffected = 0;
@@ -185,6 +184,14 @@ namespace ExpanseTrackerDataLayer
             }
 
             return rowsAffected > 0;
+        }
+        public static async Task<string> GetAllExpansesSummary()
+        {
+
+        }
+        public static async Task<string> GetExpansesSummaryByMonth()
+        {
+
         }
 
         

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ExpanseTrackerDataLayer
 {
-    internal class DataSettings
+    public static class DataSettings
     {
-        public static string connectionString = "Server = .; Database = ExpanseTracker; User id = sa; Password = 123456; " +
-            "Encrypt=False; TrustServerCertificate=True; Connection Timeout=30;";
+        public static readonly string ConnectionString = "Server = .; Database = ExpanseTracker; User id = sa; Password = 123456; " +
+                                                         "Encrypt=False; TrustServerCertificate=True; Connection Timeout=30;";
     }
 }

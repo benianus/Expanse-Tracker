@@ -15,7 +15,7 @@ namespace ExpanseTrackerBusinessLayer
         public string? Description { get; set; }
         public decimal? Amount { get; set; }
         public ExpanseTrackerDto Dto { get; set; }
-        public EnMode Mode {private set; get;}
+        public EnMode Mode { private set; get; }
         public ExpanseTracker(ExpanseTrackerDto dto, EnMode mode = EnMode.AddNew)
         {
             Id = dto.Id;
@@ -30,13 +30,13 @@ namespace ExpanseTrackerBusinessLayer
         {
             return await ExpanseTrackerData.GetExpansesList();
         }
-        public static async Task<ExpanseTracker?> FindExpanseById(int ExpanseId)
+        public static async Task<ExpanseTracker?> FindExpanseById(int expanseId)
         {
-            ExpanseTrackerDto? dto = await ExpanseTrackerData.GetExpanseById(ExpanseId);
+            ExpanseTrackerDto? dto = await ExpanseTrackerData.GetExpanseById(expanseId);
 
             if (dto != null)
             {
-                return new ExpanseTracker(dto);
+                return new ExpanseTracker(dto, EnMode.Update);
             }
             else
             {
@@ -49,6 +49,15 @@ namespace ExpanseTrackerBusinessLayer
 
             return this.Id > 0;
         }
+        public async Task<bool> UpdateExpanse()
+        {
+            return await ExpanseTrackerData.UpdateExpanse(this.Id, this.Dto);
+        }
+
+        public async Task<bool> DeleteExpanse(int Id)
+        {
+            return await ExpanseTrackerData.DeleteExpanse(Id);
+        }
 
         public async Task<bool> Save()
         {
@@ -58,7 +67,7 @@ namespace ExpanseTrackerBusinessLayer
                     Mode = EnMode.Update;
                     return await AddNewExpanse();
                 case EnMode.Update:
-                    break;
+                    return await UpdateExpanse();
             }
 
             return false;

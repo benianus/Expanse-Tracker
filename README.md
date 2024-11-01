@@ -9,9 +9,9 @@ Features:
 - Users can view a summary of all expenses.
 - Users can view a summary of expenses for a specific month (of current year).
 
-- Instructions:
+* Instructions:
 
-restore the DataBase to Sql server and connection to your localhost by changing the connection string in the code
+restore the DataBase (expanseTracker.bak) to Sql server and connection to your localhost by changing the connection string in the code
 
 Tech stack used: .Net core, Asp.net core web Api, C#, Sql sever, T-sql, Restful Api
 

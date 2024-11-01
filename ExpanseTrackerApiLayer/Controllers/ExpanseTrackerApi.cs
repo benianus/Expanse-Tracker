@@ -58,7 +58,7 @@ namespace ExpanseTrackerApiLayer.Controllers
 
             return Ok(summary);
         }
-        [HttpGet("gtBy{month}", Name = "GetExpansesSummaryByMonth")]
+        [HttpGet("getSummaryBy{month}", Name = "GetExpansesSummaryByMonth")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -142,7 +142,7 @@ namespace ExpanseTrackerDataLayer
 
                     connection.Open();
 
-                    object? result = await command.ExecuteNonQueryAsync();
+                    object? result = await command.ExecuteScalarAsync();
 
                     if (result != null && int.TryParse(result.ToString(), out int outId))
                     {
@@ -173,7 +173,7 @@ namespace ExpanseTrackerDataLayer
             
                 connection.Open();
             
-                object? result = await command.ExecuteNonQueryAsync();
+                object? result = await command.ExecuteScalarAsync();
 
                 if (result != null && int.TryParse(result.ToString(), out int outId))
                 {
@@ -185,16 +185,73 @@ namespace ExpanseTrackerDataLayer
 
             return rowsAffected > 0;
         }
-        public static async Task<string> GetAllExpansesSummary()
+        public static async Task<int> GetAllExpansesSummary()
         {
+            int summary = 0;
+            try
+            {
+                using (var connection = new SqlConnection(DataSettings.ConnectionString))
+                {
+                    using (var command = new SqlCommand("Sp_ExpansesSummary", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
 
+                        connection.Open();
+
+                        object? result = await command.ExecuteScalarAsync();
+
+                        if (result != null && int.TryParse(result.ToString(), out int outSum))
+                        {
+                            summary = Convert.ToInt32(outSum);
+                        }
+
+                        connection.Close();
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error.Message);
+                throw;
+            }
+
+            return summary;
         }
-        public static async Task<string> GetExpansesSummaryByMonth()
+        public static async Task<int> GetExpansesSummaryByMonth(int month)
         {
+            int summary = 0;
 
+            try
+            {
+                using (var connection = new SqlConnection(DataSettings.ConnectionString))
+                {
+                    using (var command = new SqlCommand("Sp_ExpansesSummaryByMonth", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@Month", month);
+
+                        connection.Open();
+
+                        object? result = await command.ExecuteScalarAsync();
+
+                        if (result != null && int.TryParse(result.ToString(), out int outSum))
+                        {
+                            summary = Convert.ToInt32(outSum);
+                        }
+
+                        connection.Close();
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error.Message);
+                throw;
+            }
+
+            return summary;
         }
-
-        
     }
-    
+
 }

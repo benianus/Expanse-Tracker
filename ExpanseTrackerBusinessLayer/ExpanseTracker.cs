@@ -43,22 +43,28 @@ namespace ExpanseTrackerBusinessLayer
                 return null;
             }
         }
-        public async Task<bool> AddNewExpanse()
+        public static async Task<int> GetAllExpansesSummary()
+        {
+            return await ExpanseTrackerData.GetAllExpansesSummary();
+        }
+        public static async Task<int> GetExpansesSummaryByMonth(int month)
+        {
+            return await ExpanseTrackerData.GetExpansesSummaryByMonth(month);
+        }
+        private async Task<bool> AddNewExpanse()
         {
             this.Id = await ExpanseTrackerData.AddNewExpanse(this.Dto);
 
             return this.Id > 0;
         }
-        public async Task<bool> UpdateExpanse()
+        private async Task<bool> UpdateExpanse()
         {
             return await ExpanseTrackerData.UpdateExpanse(this.Id, this.Dto);
         }
-
         public async Task<bool> DeleteExpanse(int Id)
         {
             return await ExpanseTrackerData.DeleteExpanse(Id);
         }
-
         public async Task<bool> Save()
         {
             switch (Mode)

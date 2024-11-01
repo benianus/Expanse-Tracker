@@ -24,7 +24,6 @@ namespace ExpanseTrackerApiLayer.Controllers
 
             return Ok(expanseList);
         }
-
         [HttpGet("getBy{id}", Name = "GetExpanseById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -48,7 +47,33 @@ namespace ExpanseTrackerApiLayer.Controllers
 
             return Ok(dto);
         }
+        [HttpGet("GetSummary", Name = "GetExpansesSummary")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<int>> GetAllExpansesSummary()
+        {
+            int? summary = await ExpanseTracker.GetAllExpansesSummary();
 
+            return Ok(summary);
+        }
+        [HttpGet("gtBy{month}", Name = "GetExpansesSummaryByMonth")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<int>> GetExpansesSummaryByMonth(int month)
+        {
+            if (month < 0)
+            {
+                return BadRequest("Bad request, month wrong");
+            }
+
+            int? sum = await ExpanseTracker.GetExpansesSummaryByMonth(month);
+
+            return Ok(sum);
+        }
         [HttpPost("addNew", Name = "AddNewExpanse")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -71,7 +96,6 @@ namespace ExpanseTrackerApiLayer.Controllers
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
-
         [HttpPut("update{id}", Name = "UpdateExpanseById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -100,7 +124,6 @@ namespace ExpanseTrackerApiLayer.Controllers
 
             return StatusCode(StatusCodes.Status500InternalServerError); 
         }
-
         [HttpDelete("delete{id}", Name = "DeleteExpanseByID")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -127,5 +150,7 @@ namespace ExpanseTrackerApiLayer.Controllers
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
+
+        
     }
 }

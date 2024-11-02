@@ -14,6 +14,7 @@ namespace ExpanseTrackerBusinessLayer
         public DateTime? Date { get; set; }
         public string? Description { get; set; }
         public decimal? Amount { get; set; }
+        public int? CategoryId { get; set; }
         public ExpanseTrackerDto Dto { get; set; }
         public EnMode Mode { private set; get; }
         public ExpanseTracker(ExpanseTrackerDto dto, EnMode mode = EnMode.AddNew)

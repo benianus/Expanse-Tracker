@@ -28,7 +28,8 @@ namespace ExpanseTrackerDataLayer
                                             reader.GetInt32(reader.GetOrdinal("Id")),
                                             reader.GetDateTime(reader.GetOrdinal("Date")),
                                             reader.GetString(reader.GetOrdinal("Description")),
-                                            reader.GetDecimal(reader.GetOrdinal("Amount"))
+                                            reader.GetDecimal(reader.GetOrdinal("Amount")),
+                                            (reader.IsDBNull(reader.GetOrdinal("CategoryId"))) ? null : reader.GetInt32(reader.GetOrdinal("CategoryId"))
                                         ));
                             }
                         }
@@ -67,7 +68,8 @@ namespace ExpanseTrackerDataLayer
                                     reader.GetInt32(reader.GetOrdinal("Id")),
                                     reader.GetDateTime(reader.GetOrdinal("Date")),
                                     reader.GetString(reader.GetOrdinal("Description")),
-                                    reader.GetDecimal(reader.GetOrdinal("Amount"))
+                                    reader.GetDecimal(reader.GetOrdinal("Amount")),
+                                    reader.IsDBNull(reader.GetOrdinal("CategoryId")) ? null : reader.GetInt32(reader.GetOrdinal("CategoryId"))
                                 );
                             }
                         }
@@ -98,6 +100,7 @@ namespace ExpanseTrackerDataLayer
                     command.Parameters.AddWithValue("@Date", expanseDto?.Date);
                     command.Parameters.AddWithValue("@Description", expanseDto?.Description);
                     command.Parameters.AddWithValue("@Amount", expanseDto?.Amount);
+                    command.Parameters.AddWithValue("@CategoryId", expanseDto?.CategoryId);
 
                     var outputParameter = new SqlParameter("@Id", SqlDbType.Int)
                     {
@@ -139,6 +142,7 @@ namespace ExpanseTrackerDataLayer
                     command.Parameters.AddWithValue("@Date", dto.Date);
                     command.Parameters.AddWithValue("@Description", dto.Description);
                     command.Parameters.AddWithValue("@Amount", dto.Amount);
+                    command.Parameters.AddWithValue("CategoryId", dto.CategoryId);
 
                     connection.Open();
 
@@ -253,5 +257,4 @@ namespace ExpanseTrackerDataLayer
             return summary;
         }
     }
-
 }

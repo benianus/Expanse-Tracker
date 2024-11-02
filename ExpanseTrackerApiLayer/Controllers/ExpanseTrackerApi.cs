@@ -150,7 +150,5 @@ namespace ExpanseTrackerApiLayer.Controllers
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
-
-        
     }
 }

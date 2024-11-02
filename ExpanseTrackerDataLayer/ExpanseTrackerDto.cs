@@ -13,12 +13,14 @@ namespace ExpanseTrackerDataLayer
         public DateTime? Date { get; set; }
         public string? Description { get; set; }
         public decimal? Amount { get; set; }
-        public ExpanseTrackerDto(int? id, DateTime? date, string? description, decimal? amount) 
+        public int? CategoryId { get; set; }
+        public ExpanseTrackerDto(int? id, DateTime? date, string? description, decimal? amount, int? categoryID) 
         {
             Id = id;
             Date = date;
             Description = description;
             Amount = amount;
+            CategoryId = categoryID;
         }
         
     }

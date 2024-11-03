@@ -10,6 +10,16 @@ namespace ExpanseTrackerBusinessLayer
             AddNew, 
             Update
         }
+        public enum EnCategories
+        {
+            Groceries,
+            Leisure,
+            Electronics,
+            Utilities,
+            Clothing,
+            Health,
+            Others
+        }
         public int? Id { get; set; }
         public DateTime? Date { get; set; }
         public string? Description { get; set; }
@@ -51,6 +61,10 @@ namespace ExpanseTrackerBusinessLayer
         public static async Task<int> GetExpansesSummaryByMonth(int month)
         {
             return await ExpanseTrackerData.GetExpansesSummaryByMonth(month);
+        }
+        public static async Task<List<ExpanseTrackerDto>?> GetExpansesByCategory(int category)
+        {
+            return await ExpanseTrackerData.GetExpansesByCategory(category);
         }
         private async Task<bool> AddNewExpanse()
         {

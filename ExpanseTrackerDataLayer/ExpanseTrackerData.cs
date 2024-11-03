@@ -86,6 +86,123 @@ namespace ExpanseTrackerDataLayer
 
             return null;
         }
+        public static async Task<int> GetAllExpansesSummary()
+        {
+            int summary = 0;
+            try
+            {
+                using (var connection = new SqlConnection(DataSettings.ConnectionString))
+                {
+                    using (var command = new SqlCommand("Sp_ExpansesSummary", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        connection.Open();
+
+                        object? result = await command.ExecuteScalarAsync();
+
+                        if (result != null && int.TryParse(result.ToString(), out int outSum))
+                        {
+                            summary = Convert.ToInt32(outSum);
+                        }
+
+                        connection.Close();
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error.Message);
+                throw;
+            }
+
+            return summary;
+        }
+        public static async Task<int> GetExpansesSummaryByMonth(int month)
+        {
+            int summary = 0;
+
+            try
+            {
+                using (var connection = new SqlConnection(DataSettings.ConnectionString))
+                {
+                    using (var command = new SqlCommand("Sp_ExpansesSummaryByMonth", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@Month", month);
+
+                        connection.Open();
+
+                        object? result = await command.ExecuteScalarAsync();
+
+                        if (result != null && int.TryParse(result.ToString(), out int outSum))
+                        {
+                            summary = Convert.ToInt32(outSum);
+                        }
+
+                        connection.Close();
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error.Message);
+                throw;
+            }
+
+            return summary;
+        }
+        public static async Task<List<ExpanseTrackerDto>?> GetExpansesByCategory(int CategoryId)
+        {
+            List<ExpanseTrackerDto>? expansesList = new List<ExpanseTrackerDto>();
+
+            try
+            {
+                using (var connection = new SqlConnection(DataSettings.ConnectionString))
+                {
+                    using (var command = new SqlCommand("Sp_GetExpansesByCategory", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@CategoryId", CategoryId);
+
+                        connection.Open();
+
+                        var reader = await command.ExecuteReaderAsync();
+
+                        if (reader != null)
+                        {
+                            while (reader.Read())
+                            {
+                                expansesList.Add(
+                                    new ExpanseTrackerDto(
+                                        reader.GetInt32(reader.GetOrdinal("Id")),
+                                        reader.GetDateTime(reader.GetOrdinal("Date")),
+                                        reader.GetString(reader.GetOrdinal("Description")),
+                                        reader.GetDecimal(reader.GetOrdinal("Amount")),
+                                        reader.GetInt32(reader.GetOrdinal("CategoryId"))
+                                    )
+                                );
+                            }
+                        }
+                        else
+                        {
+                            return null;
+                        }
+
+                        connection.Close();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return expansesList;
+        }
         public static async Task<int?> AddNewExpanse(ExpanseTrackerDto? expanseDto)
         {
             int expanseId = 0;
@@ -189,72 +306,6 @@ namespace ExpanseTrackerDataLayer
 
             return rowsAffected > 0;
         }
-        public static async Task<int> GetAllExpansesSummary()
-        {
-            int summary = 0;
-            try
-            {
-                using (var connection = new SqlConnection(DataSettings.ConnectionString))
-                {
-                    using (var command = new SqlCommand("Sp_ExpansesSummary", connection))
-                    {
-                        command.CommandType = CommandType.StoredProcedure;
-
-                        connection.Open();
-
-                        object? result = await command.ExecuteScalarAsync();
-
-                        if (result != null && int.TryParse(result.ToString(), out int outSum))
-                        {
-                            summary = Convert.ToInt32(outSum);
-                        }
-
-                        connection.Close();
-                    }
-                }
-            }
-            catch (Exception error)
-            {
-                Console.WriteLine(error.Message);
-                throw;
-            }
-
-            return summary;
-        }
-        public static async Task<int> GetExpansesSummaryByMonth(int month)
-        {
-            int summary = 0;
-
-            try
-            {
-                using (var connection = new SqlConnection(DataSettings.ConnectionString))
-                {
-                    using (var command = new SqlCommand("Sp_ExpansesSummaryByMonth", connection))
-                    {
-                        command.CommandType = CommandType.StoredProcedure;
-
-                        command.Parameters.AddWithValue("@Month", month);
-
-                        connection.Open();
-
-                        object? result = await command.ExecuteScalarAsync();
-
-                        if (result != null && int.TryParse(result.ToString(), out int outSum))
-                        {
-                            summary = Convert.ToInt32(outSum);
-                        }
-
-                        connection.Close();
-                    }
-                }
-            }
-            catch (Exception error)
-            {
-                Console.WriteLine(error.Message);
-                throw;
-            }
-
-            return summary;
-        }
+        
     }
 }

@@ -74,6 +74,27 @@ namespace ExpanseTrackerApiLayer.Controllers
 
             return Ok(sum);
         }
+        [HttpGet("getExpansesBy{categoryId}", Name = "GetExpansesByCategory")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<ExpanseTrackerDto>>?> GetExpansesByCategory(int categoryId)
+        {
+            if (categoryId < 0 && categoryId > 7)
+            {
+                return BadRequest("Bad request, category id should be between 1 to 7");
+            }
+
+            List<ExpanseTrackerDto>? expanses = await ExpanseTracker.GetExpansesByCategory(categoryId);
+
+            if (expanses == null)
+            {
+                return NotFound("Not found, No expanses found in this category");
+            }
+
+            return Ok(expanses);
+        }
         [HttpPost("addNew", Name = "AddNewExpanse")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -96,6 +96,7 @@ namespace ExpanseTrackerApiLayer.Controllers
             return Ok(expanses);
         }
         [HttpPost("addNew", Name = "AddNewExpanse")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -114,8 +115,10 @@ namespace ExpanseTrackerApiLayer.Controllers
                 dto.Id = expanseTracker.Id;
                 return CreatedAtRoute("GetExpanseById", new { Id = dto.Id }, dto);
             }
-
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            else
+            {
+                return Ok("Expanse Budget exceed");
+            }
         }
         [HttpPut("update{id}", Name = "UpdateExpanseById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -145,6 +148,25 @@ namespace ExpanseTrackerApiLayer.Controllers
 
             return StatusCode(StatusCodes.Status500InternalServerError); 
         }
+        [HttpPut("AddBudgetFor{monthId}", Name = "AddMonthBudget")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<string>> AddMonthBudget(int monthId, MonthBudgetDto dto)
+        {
+            if (monthId < 0 || monthId > 12)
+            {
+                return BadRequest($"Bad request, Month Id {monthId} outside range 1 - 12 or Budget less then 0");
+            }
+
+            if (await ExpanseTracker.AddMonthBudget(monthId, dto))
+            {
+                return Ok($"Budget {dto.Budget} updated Successfull for month {monthId}");
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
         [HttpDelete("delete{id}", Name = "DeleteExpanseByID")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -171,5 +193,6 @@ namespace ExpanseTrackerApiLayer.Controllers
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
+        
     }
 }

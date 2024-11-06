@@ -219,18 +219,14 @@ namespace ExpanseTrackerDataLayer
                     command.Parameters.AddWithValue("@Amount", expanseDto?.Amount);
                     command.Parameters.AddWithValue("@CategoryId", expanseDto?.CategoryId);
 
-                    var outputParameter = new SqlParameter("@Id", SqlDbType.Int)
-                    {
-                        Direction = ParameterDirection.Output
-                    };
-
-                    command.Parameters.Add(outputParameter);
-
                     connection.Open();
 
-                    await command.ExecuteNonQueryAsync();
+                    object? result = await command.ExecuteScalarAsync();
 
-                    expanseId = (int)outputParameter.Value;
+                    if (result != null && int.TryParse(result.ToString(), out int insertedId))
+                    {
+                        expanseId = Convert.ToInt32(insertedId);
+                    }
 
                     connection.Close();
 
@@ -306,6 +302,36 @@ namespace ExpanseTrackerDataLayer
 
             return rowsAffected > 0;
         }
-        
+        public static async Task<bool> AddMonthBudget(int MonthId, MonthBudgetDto dto)
+        {
+            int rowsAffected = 0;
+
+            try
+            {
+                using (var connection = new SqlConnection(DataSettings.ConnectionString))
+                {
+                    using (var command = new SqlCommand("Sp_AddMonthBudget", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@MonthId", MonthId);
+                        command.Parameters.AddWithValue("@Budget", dto.Budget);
+
+                        connection.Open();  
+
+                        rowsAffected = await command.ExecuteNonQueryAsync();
+
+                        connection.Close();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return rowsAffected > 0;
+        }
     }
 }

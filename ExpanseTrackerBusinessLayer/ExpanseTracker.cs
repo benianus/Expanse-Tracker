@@ -80,6 +80,10 @@ namespace ExpanseTrackerBusinessLayer
         {
             return await ExpanseTrackerData.DeleteExpanse(Id);
         }
+        public static async Task<bool> AddMonthBudget(int MonthId, MonthBudgetDto dto)
+        {
+            return await ExpanseTrackerData.AddMonthBudget(MonthId, dto);
+        }
         public async Task<bool> Save()
         {
             switch (Mode)
